@@ -30,14 +30,14 @@ class DoubaoImageTool(Tool):
     def _invoke(self, tool_parameters: dict[str, Any]) -> Generator[ToolInvokeMessage]:
         api_key = self.runtime.credentials.get("api_key")
         if not api_key:
-            yield self.create_text_message("请先在插件配置中填写火山方舟 API Key。")
+            yield self.create_text_message("Configure the Volcengine Ark API key in the plugin provider settings first.")
             return
 
         model = str(tool_parameters.get("model") or self.runtime.credentials.get("model") or DEFAULT_MODEL).strip()
 
         prompt = str(tool_parameters.get("prompt") or "").strip()
         if not prompt:
-            yield self.create_text_message("请输入生成提示词。")
+            yield self.create_text_message("Enter a prompt for image or video generation.")
             return
 
         try:
@@ -50,8 +50,8 @@ class DoubaoImageTool(Tool):
         except (ArkApiError, requests.RequestException, ValueError) as exc:
             message = str(exc)
             if "InvalidEndpointOrModel.NotFound" in message:
-                message += "\n请确认模型参数填写的是实际 API 模型 ID，不是展示名称。"
-            yield self.create_text_message(f"豆包生成调用失败: {message}")
+                message += "\nVerify that the model parameter is the actual API model ID, not a display name."
+            yield self.create_text_message(f"Doubao generation request failed: {message}")
 
     def _invoke_image(
         self,
@@ -136,7 +136,7 @@ class DoubaoImageTool(Tool):
         if not task_id:
             raise ArkApiError("Ark response does not contain video generation task id")
 
-        yield self.create_text_message(f"视频生成任务已创建，任务 ID: {task_id}")
+        yield self.create_text_message(f"Video generation task created. Task ID: {task_id}")
 
         for attempt in range(60):
             time.sleep(5)
@@ -151,7 +151,7 @@ class DoubaoImageTool(Tool):
                 video_url = _find_video_url(task_data)
                 if not video_url:
                     raise ArkApiError("Ark video task succeeded but no video URL was returned")
-                yield self.create_text_message(f"视频链接: {video_url}")
+                yield self.create_text_message(f"Video URL: {video_url}")
                 yield self.create_json_message(
                     {
                         "type": "video",
@@ -166,13 +166,13 @@ class DoubaoImageTool(Tool):
                 )
                 return
             if status == "failed":
-                error_message = (task_data.get("error") or {}).get("message") or "未知错误"
+                error_message = (task_data.get("error") or {}).get("message") or "Unknown error"
                 raise ArkApiError(f"Video generation task failed: {error_message}")
             if status == "canceled":
                 raise ArkApiError("Video generation task was canceled")
 
             if attempt in {0, 5, 11, 23, 35, 47}:
-                yield self.create_text_message(f"视频正在生成中，已等待 {(attempt + 1) * 5} 秒...")
+                yield self.create_text_message(f"Video generation is still running. Waited {(attempt + 1) * 5} seconds...")
 
         raise ArkApiError("Video generation task timed out")
 

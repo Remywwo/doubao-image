@@ -52,23 +52,28 @@ jobs:
       - name: Package Plugin
         id: package
         run: |
-          # Use the downloaded CLI tool to package
           cd $GITHUB_WORKSPACE
-          # Use variables for package name
           PACKAGE_NAME="${{ steps.get_basic_info.outputs.plugin_name }}-${{ steps.get_basic_info.outputs.version }}.difypkg"
-          # Use CLI from runner temp
-          $RUNNER_TEMP/bin/dify-plugin-linux-amd64 plugin package . -o "$PACKAGE_NAME"
+          PACKAGE_SOURCE="$RUNNER_TEMP/plugin-package-source"
+
+          rm -rf "$PACKAGE_SOURCE"
+          mkdir -p "$PACKAGE_SOURCE"/provider "$PACKAGE_SOURCE"/tools "$PACKAGE_SOURCE"/readme "$PACKAGE_SOURCE"/_assets
+
+          cp manifest.yaml main.py requirements.txt README.md PRIVACY.md "$PACKAGE_SOURCE"/
+          cp provider/doubao_image.py provider/doubao_image.yaml "$PACKAGE_SOURCE"/provider/
+          cp tools/ark_client.py tools/doubao_image.py tools/doubao_image.yaml "$PACKAGE_SOURCE"/tools/
+          cp readme/README_zh_Hans.md "$PACKAGE_SOURCE"/readme/
+          cp _assets/icon.svg _assets/icon-dark.svg "$PACKAGE_SOURCE"/_assets/
+
+          $RUNNER_TEMP/bin/dify-plugin-linux-amd64 plugin package "$PACKAGE_SOURCE" -o "$GITHUB_WORKSPACE/$PACKAGE_NAME"
 
           # Show packaging result
           echo "Package result:"
           ls -la "$PACKAGE_NAME"
           echo "package_name=$PACKAGE_NAME" >> $GITHUB_OUTPUT
 
-          # Show full file path and directory structure (kept for debugging)
-          echo "\\nFull file path:"
-          pwd
-          echo "\\nDirectory structure:"
-          tree || ls -R
+          echo "\\nPackaged source contents:"
+          find "$PACKAGE_SOURCE" -maxdepth 3 -type f | sort
 
       - name: Checkout target repo
         uses: actions/checkout@v3
@@ -129,7 +134,7 @@ jobs:
         run: |
           gh pr create \
             --repo langgenius/dify-plugins \
-            --head "${{ steps.get_basic_info.outputs.author }}:${{ steps.get_basic_info.outputs.plugin_name }}-${{ steps.get_basic_info.outputs.version }}" \
+            --head "${{ steps.get_basic_info.outputs.author }}:bump-${{ steps.get_basic_info.outputs.plugin_name }}-plugin-${{ steps.get_basic_info.outputs.version }}" \
             --base main \
             --title "bump ${{ steps.get_basic_info.outputs.plugin_name }} plugin to version ${{ steps.get_basic_info.outputs.version }}" \
             --body "bump ${{ steps.get_basic_info.outputs.plugin_name }} plugin package to version ${{ steps.get_basic_info.outputs.version }}
