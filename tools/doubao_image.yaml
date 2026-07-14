@@ -1,0 +1,146 @@
+identity:
+  name: "doubao_media"
+  author: "remywwo"
+  label:
+    en_US: "Generate Image or Video"
+    zh_Hans: "生成图片或视频"
+description:
+  human:
+    en_US: Generate images or videos from a text prompt with a selected Doubao model.
+    zh_Hans: 使用选定的豆包模型根据文本提示词生成图片或视频。
+  llm: Generate images or videos from the supplied text prompt with a selected Doubao generation model.
+parameters:
+  - name: model
+    type: select
+    required: true
+    default: doubao-seedream-4-0-250828
+    label:
+      en_US: Model ID
+      zh_Hans: 模型 ID
+    human_description:
+      en_US: Optional. Doubao model ID. Uses provider default when empty.
+      zh_Hans: 可选。豆包模型 ID。为空时使用 provider 默认模型。
+    llm_description: The Doubao model ID to use.
+    form: form
+    options:
+      - value: doubao-seedream-3-0-t2i-250415
+        label:
+          en_US: "Image / doubao-seedream-3-0-t2i-250415"
+          zh_Hans: "图片生成 / doubao-seedream-3-0-t2i-250415"
+      - value: doubao-seedream-4-0-250828
+        label:
+          en_US: "Image / doubao-seedream-4-0-250828"
+          zh_Hans: "图片生成 / doubao-seedream-4-0-250828"
+      - value: doubao-seedream-4-5-251128
+        label:
+          en_US: "Image / doubao-seedream-4-5-251128"
+          zh_Hans: "图片生成 / doubao-seedream-4-5-251128"
+      - value: doubao-seedream-5-0-pro-260628
+        label:
+          en_US: "Image / doubao-seedream-5-0-pro-260628"
+          zh_Hans: "图片生成 / doubao-seedream-5-0-pro-260628"
+      - value: doubao-seedream-5-0-260128
+        label:
+          en_US: "Image / doubao-seedream-5-0-260128"
+          zh_Hans: "图片生成 / doubao-seedream-5-0-260128"
+      - value: doubao-seedance-2-0-260128
+        label:
+          en_US: "Video / doubao-seedance-2-0-260128"
+          zh_Hans: "生成视频 / doubao-seedance-2-0-260128"
+      - value: doubao-seedance-2-0-fast-260128
+        label:
+          en_US: "Video / doubao-seedance-2-0-fast-260128"
+          zh_Hans: "生成视频 / doubao-seedance-2-0-fast-260128"
+      - value: doubao-seedance-2-0-mini-260615
+        label:
+          en_US: "Video / doubao-seedance-2-0-mini-260615"
+          zh_Hans: "生成视频 / doubao-seedance-2-0-mini-260615"
+
+  - name: prompt
+    type: string
+    required: true
+    label:
+      en_US: Prompt
+      zh_Hans: 提示词
+    human_description:
+      en_US: Text prompt used to generate the image or video.
+      zh_Hans: 用于生成图片或视频的文本提示词。
+    llm_description: Detailed text prompt used to generate the image or video.
+    form: llm
+
+  - name: response_format
+    type: select
+    required: true
+    default: "url"
+    form: form
+    label:
+      en_US: Response Format
+      zh_Hans: 返回格式
+    human_description:
+      en_US: Return generated images as base64 data or URLs. Only used by image generation models.
+      zh_Hans: 以 base64 数据或 URL 返回生成图片。仅图片生成模型使用。
+    llm_description: Return generated images as base64 data or URLs. Only used by image generation models.
+    options:
+      - value: "b64_json"
+        label:
+          en_US: Base64
+          zh_Hans: Base64
+      - value: "url"
+        label:
+          en_US: URL
+          zh_Hans: URL
+
+  - name: ratio
+    type: select
+    required: true
+    default: "16:9"
+    form: form
+    label:
+      en_US: Video Ratio
+      zh_Hans: 视频比例
+    human_description:
+      en_US: Video aspect ratio. Only used by video generation models.
+      zh_Hans: 视频画面比例。仅视频生成模型使用。
+    llm_description: Video aspect ratio. Only used by video generation models.
+    options:
+      - value: "16:9"
+        label:
+          en_US: "16:9"
+          zh_Hans: "16:9"
+      - value: "9:16"
+        label:
+          en_US: "9:16"
+          zh_Hans: "9:16"
+      - value: "1:1"
+        label:
+          en_US: "1:1"
+          zh_Hans: "1:1"
+      - value: "4:3"
+        label:
+          en_US: "4:3"
+          zh_Hans: "4:3"
+
+  - name: duration
+    type: select
+    required: true
+    default: "10"
+    form: form
+    label:
+      en_US: Video Duration
+      zh_Hans: 视频时长
+    human_description:
+      en_US: Video duration in seconds. Only used by video generation models.
+      zh_Hans: 视频时长，单位秒。仅视频生成模型使用。
+    llm_description: Video duration in seconds. Only used by video generation models.
+    options:
+      - value: "5"
+        label:
+          en_US: 5 seconds
+          zh_Hans: 5 秒
+      - value: "10"
+        label:
+          en_US: 10 seconds
+          zh_Hans: 10 秒
+extra:
+  python:
+    source: tools/doubao_image.py

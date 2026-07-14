@@ -1,0 +1,76 @@
+identity:
+  author: "remywwo"
+  name: "doubao_image"
+  label:
+    en_US: "Doubao Media"
+    zh_Hans: "豆包图片/视频生成"
+  description:
+    en_US: Generate images or videos from text prompts with Doubao generation models.
+    zh_Hans: 使用豆包生成模型根据文本提示词生成图片或视频。
+  icon: "icon.svg"
+  tags:
+    - "image"
+
+
+credentials_for_provider:
+  api_key:
+    type: "secret-input"
+    required: true
+    label:
+      en_US: "API Key"
+      zh_Hans: "API Key"
+    placeholder:
+      en_US: "Please input your API Key"
+      zh_Hans: "请输入你的 API Key"
+    help:
+      en_US: "API Key used to authenticate Doubao media generation requests."
+      zh_Hans: "用于认证豆包图片/视频生成请求的 API Key。"
+
+  model:
+    type: select
+    required: true
+    default: doubao-seedream-4-0-250828
+    label:
+      en_US: Default Model ID
+      zh_Hans: 默认模型 ID
+    help:
+      en_US: "Choose a default model ID. Image models generate images; video models generate videos."
+      zh_Hans: "选择默认模型 ID。图片生成模型生成图片；视频模型生成视频。"
+    options:
+      - value: doubao-seedream-3-0-t2i-250415
+        label:
+          en_US: "Image / doubao-seedream-3-0-t2i-250415"
+          zh_Hans: "图片生成 / doubao-seedream-3-0-t2i-250415"
+      - value: doubao-seedream-4-0-250828
+        label:
+          en_US: "Image / doubao-seedream-4-0-250828"
+          zh_Hans: "图片生成 / doubao-seedream-4-0-250828"
+      - value: doubao-seedream-4-5-251128
+        label:
+          en_US: "Image / doubao-seedream-4-5-251128"
+          zh_Hans: "图片生成 / doubao-seedream-4-5-251128"
+      - value: doubao-seedream-5-0-pro-260628
+        label:
+          en_US: "Image / doubao-seedream-5-0-pro-260628"
+          zh_Hans: "图片生成 / doubao-seedream-5-0-pro-260628"
+      - value: doubao-seedream-5-0-260128
+        label:
+          en_US: "Image / doubao-seedream-5-0-260128"
+          zh_Hans: "图片生成 / doubao-seedream-5-0-260128"
+      - value: doubao-seedance-2-0-260128
+        label:
+          en_US: "Video / doubao-seedance-2-0-260128"
+          zh_Hans: "生成视频 / doubao-seedance-2-0-260128"
+      - value: doubao-seedance-2-0-fast-260128
+        label:
+          en_US: "Video / doubao-seedance-2-0-fast-260128"
+          zh_Hans: "生成视频 / doubao-seedance-2-0-fast-260128"
+      - value: doubao-seedance-2-0-mini-260615
+        label:
+          en_US: "Video / doubao-seedance-2-0-mini-260615"
+          zh_Hans: "生成视频 / doubao-seedance-2-0-mini-260615"
+tools:
+  - tools/doubao_image.yaml
+extra:
+  python:
+    source: provider/doubao_image.py
